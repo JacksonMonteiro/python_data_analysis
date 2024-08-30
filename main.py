@@ -1,5 +1,6 @@
 from src.data_loader import loadData
 from src.processing import process
+from src.visualization import plotBar, plotPie
 
 def main(): 
     path = "assets/Clientes.xlsx"
@@ -10,13 +11,11 @@ def main():
         
         metrics = process(df)
 
-        print(f"Faturamento médio: R$ {metrics['faturamentoMedio']:.2f} \n")
-        print(f"Serviços com maior frequência: \n{metrics['servicoFrequente']} \n")
-        print(f"Parceiros com maior frequência: \n{metrics['parceiroFrequente']} \n")
-        print(f"Nichos com maior frequência: \n{metrics['nichoFrequente']} \n")
-        print(f"Prospecção mais eficiente: \n{metrics['prospeccao']} \n")
+        plotBar(metrics['servicoFrequente'], 'Serviços com Mais Frequência', 'Serviço', 'Contagem')
+        plotBar(metrics['parceiroFrequente'], 'Parceiros com Mais Frequência', 'Parceiro', 'Contagem')
+        plotPie(metrics['nichoFrequente'], 'Distribuição dos Nichos')
     except Exception as e:
-        print(f"Ocorreu um erro ao realizar o carregamento dos dados: {e}")
+        print(f"Ocorreu um erro ao executar a aplicação: {e}")
 
 if __name__ == "__main__":
     main()        

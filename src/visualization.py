@@ -1,35 +1,36 @@
-import matplotlib.pyplot as plt
-import seaborn as sns
-from tkinter import Tk, Button
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
-def plotAll(metrics):
-    plt.figure(figsize=(15, 10))
+def plotAll(metrics):    
+    fig = make_subplots(
+        rows=2, cols=2,
+        specs=[[{"type": "xy"}, {"type": "domain"}],  
+               [{"type": "domain"}, {"type": "xy"}]],  
+        subplot_titles=("Serviços com Mais Frequência", "Parceiros com Mais Frequência", 
+                        "Distribuição dos Nichos", "Prospecção")
+    )
+
     
-    # Gráfico de barras para Serviços
-    plt.subplot(2, 2, 1)
-    sns.barplot(x=metrics['servicoFrequente'].index, y=metrics['servicoFrequente'].values)
-    plt.title('Serviços com Mais Frequência')
-    plt.xlabel('Serviço')
-    plt.ylabel('Contagem')
+    fig.add_trace(
+        go.Bar(x=metrics['servicoFrequente'].index, y=metrics['servicoFrequente'].values, name='Serviços'),
+        row=1, col=1
+    )
 
-    # Gráfico de barras para Parceiros
-    plt.subplot(2, 2, 2)
-    sns.barplot(x=metrics['parceiroFrequente'].index, y=metrics['parceiroFrequente'].values)
-    plt.title('Parceiros com Mais Frequência')
-    plt.xlabel('Parceiro')
-    plt.ylabel('Contagem')
+    fig.add_trace(
+        go.Pie(labels=metrics['parceiroFrequente'].index, values=metrics['parceiroFrequente'].values, name='Parceiros'),
+        row=1, col=2
+    )
+    
+    fig.add_trace(
+        go.Pie(labels=metrics['nichoFrequente'].index, values=metrics['nichoFrequente'].values, name='Nichos'),
+        row=2, col=1
+    )
+    
+    fig.add_trace(
+        go.Bar(x=metrics['prospeccao'].index, y=metrics['prospeccao'].values, name='Prospecção'),
+        row=2, col=2
+    )
 
-    # Gráfico de pizza para Nichos
-    plt.subplot(2, 2, 3)
-    plt.pie(metrics['nichoFrequente'].values, labels=metrics['nichoFrequente'].index, autopct='%1.1f%%', startangle=140)
-    plt.title('Distribuição dos Nichos')
-
-    # Gráfico de barras para Prospecção
-    plt.subplot(2, 2, 4)
-    sns.barplot(x=metrics['prospeccao'].index, y=metrics['prospeccao'].values)
-    plt.title('Prospecção')
-    plt.xlabel('Tipo de Prospecção')
-    plt.ylabel('Contagem')
-
-    plt.tight_layout()
-    plt.show()
+    fig.update_layout(title_text="Análise de Métricas", showlegend=True)
+        
+    fig.show()
